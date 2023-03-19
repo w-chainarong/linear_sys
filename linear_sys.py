@@ -73,8 +73,6 @@ class similarTrnsfrm :
                 self.EigenSpace[(index, eigval, size)].append(basis[n:n+size])
                 n += size
             Q, DJ = self.mat_A.jordan_form()
-        #for r in range(Q.shape[1]) :
-            #self.eigenVectors.append(Q[:,r]) 
         return self.EigenSpace, Q, DJ
 
     def printEigenSpace(self) :
