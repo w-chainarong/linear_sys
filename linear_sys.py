@@ -2,8 +2,7 @@ try:
     from sympy import *
 except ImportError:
     from sympy import *
-import sys
-    
+import sys    
 class rangeSpace :
     def __init__(self, A, y) :
         self.mat_A = A
@@ -17,7 +16,6 @@ class rangeSpace :
         self.allSolution = [ ]
         self.freevarIndex = [ ]
         return
-
     def solutionSpace(self) :
         self.allSolution, params, self.freevarIndex = \
             self.mat_A.gauss_jordan_solve(self.vect_y, freevar=True)
@@ -25,7 +23,6 @@ class rangeSpace :
         self.vect_xp = self.allSolution.xreplace(params_zeroes)
         return self.vect_xp, self.nullity_A, self.nullSpace_A, \
             self.rank_A, self.rangeSpaceBasis 
-
     def printGeneralSolution(self) :
         self.parameter = symbols('alpha0:%d'%(self.nullity_A))
         print('Ax=y  (The solution x is in transpose form)' )
@@ -41,8 +38,6 @@ class rangeSpace :
             pprint(h)
         sys.stdout.flush()
         return
-
-
 class similarTrnsfrm :
     def __init__(self, A) :
         self.mat_A = A
@@ -74,7 +69,6 @@ class similarTrnsfrm :
                 n += size
             Q, DJ = self.mat_A.jordan_form()
         return self.EigenSpace, Q, DJ
-
     def printEigenSpace(self) :
         Keys = list(self.EigenSpace.keys())
         Values = list(self.EigenSpace.values())
