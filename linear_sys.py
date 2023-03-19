@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar  8 16:54:06 2023
-
-@author: acer
-"""
-
 try:
     from sympy import *
 except ImportError:
