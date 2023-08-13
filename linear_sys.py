@@ -45,7 +45,6 @@ class similarTrnsfrm :
         return
     def eigenSpace(self) :
         self.EigenSpace = {}
-        self.eigenDict = self.mat_A
         if(self.mat_A.is_diagonalizable()) :
             eigenVectors = self.mat_A.eigenvects() 
             for i in range (len(eigenVectors)) :
