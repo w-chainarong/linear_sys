@@ -6,7 +6,6 @@ import sys
 class rangeSpace :
     def __init__(self, A, y) :
         self.mat_A = A
-        self.Aug_A = A.row_join(y)
         self.vect_y = y
         self.nullSpace_A = self.mat_A.nullspace()
         self.nullity_A = len(self.nullSpace_A)
