@@ -2,7 +2,6 @@ try:
     from sympy import *
 except ImportError:
     from sympy import *
-import sys    
 class rangeSpace :
     def __init__(self, A, y) :
         self.mat_A = A
@@ -16,27 +15,47 @@ class rangeSpace :
         self.freevarIndex = [ ]
         return
     def solutionSpace(self) :
-        self.allSolution, params, self.freevarIndex = \
-            self.mat_A.gauss_jordan_solve(self.vect_y, freevar=True)
+        try :
+            self.allSolution, params, self.freevarIndex = \
+                self.mat_A.gauss_jordan_solve(self.vect_y, freevar=True)
+        except :
+            self.allSolution = 'There is no solution'
+            return 0, 0, 0, 0, 0
         params_zeroes = { tau:0 for tau in params }
         self.vect_xp = self.allSolution.xreplace(params_zeroes)
         return self.vect_xp, self.nullity_A, self.nullSpace_A, \
             self.rank_A, self.rangeSpaceBasis 
     def printGeneralSolution(self) :
+        from IPython.display import display, Latex
+        import re
+        x = MatrixSymbol('x', shape(self.mat_A)[1],1)
+        MatEqn = "$${}\\mathbf{{x}} = {}$$".format(latex(self.mat_A),latex(self.vect_y))
+        display(Latex(MatEqn))
+        if(self.allSolution == 'There is no solution') :
+            print('\nThe system of linear equations has no solution.\n')
+            return 0;
         self.parameter = symbols('alpha0:%d'%(self.nullity_A))
-        print('Ax=y  (The solution x is in transpose form)' )
-        x, T = symbols("x, T")
-        pprint(x**T)
-        print('   = ', end="")
-        pprint(self.vect_xp.T)
-        for i in range(self.nullity_A):
-            print('   +', end=" ")
-            Buff = factor(self.parameter[i]*self.nullSpace_A[i].T)
+        E = []
+        Xp = self.vect_xp
+        for i in reversed(range(self.nullity_A)):
+            Buff = factor(self.parameter[i]*self.nullSpace_A[i])
             g = gcd(tuple(Buff))
             h = MatMul(g,(Buff/g),evaluate = False)
-            pprint(h)
-        sys.stdout.flush()
-        return
+            if i == (self.nullity_A) - 1 :
+                E = h 
+            else :
+                E =MatAdd(E,h, evaluate = False)
+        if self.nullity_A :
+            if Xp.norm() :
+                X = "$$\\mathbf{{x}}={} + {}$$".format(latex(Xp),latex(E))
+            else :
+                X = "$$\\mathbf{{x}}={}$$".format(latex(E))
+        else :
+            X = "$$\\mathbf{{x}}={}$$".format(latex(Xp))
+        X= re.sub(r'\\left\(|\\right\)', '', X)
+        display(Latex(X)) 
+        return E
+    
 class similarTrnsfrm :
     def __init__(self, A) :
         self.mat_A = A
@@ -68,14 +87,24 @@ class similarTrnsfrm :
             Q, DJ = self.mat_A.jordan_form()
         return self.EigenSpace, Q, DJ
     def printEigenSpace(self) :
+        from IPython.display import display, Latex
+        import re
+        MatEqn = "$$\\mathbf{{A}} = {}$$".format(latex(self.mat_A))
+        display(Latex(MatEqn))
         Keys = list(self.EigenSpace.keys())
         Values = list(self.EigenSpace.values())
-        T = symbols("T")
+        Q, T= symbols("Q T")
         Vector = symbols('q1:%d'%(len(Keys)+1))
-        print('Q = ', end = '')
-        pprint(Matrix(Vector).T)
+        Q = "$$\\mathbf{{Q}}={}$$".format(latex(Matrix(Vector).T))
+        Q = re.sub(r'q', r'\\mathbf{q}', Q)
+        display(Latex(Q))
+        lamda = symbols('lamda1:%d'%(len(Keys)+1))
         for i in range(len(Keys)):
-                print(Keys[i])
-                pprint(Vector[i]**T)
-                pprint(Matrix(Values[i]).T) 
+                ID = "$${}={}, mutiplicity ={}$$".format(latex(lamda[i]), \
+                        latex(Keys[i][1]), latex(Keys[i][2]))
+                display(Latex(ID))
+                V = latex(Vector[i]**T)
+                V = re.sub(r'q', r'\\mathbf{q}', V)
+                V = "$${}={}$$".format(V, latex(Matrix(Values[i]).T)) 
+                display(Latex(V)) 
         return
