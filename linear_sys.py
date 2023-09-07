@@ -73,7 +73,7 @@ class similarTrnsfrm :
             Q, DJ =  self.mat_A.diagonalize()
         else:
             Q, blocks = self.mat_A.jordan_cells() 
-            basis = [Q[:,i] for i in range(Q.shape[1])] #Q dimension (4,4)
+            basis = [Q[:,i] for i in range(Q.shape[1])]
             n = 0
             self.EigenSpace = {}
             index = 0
